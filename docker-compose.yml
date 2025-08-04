@@ -1,0 +1,55 @@
+networks:
+    backend:
+        driver: bridge
+    payment-processor:
+        name: payment-processor
+        external: true
+services:
+    api1:
+        image: mxlange/ws-api:v1.0.0
+        hostname: api1
+        environment:
+            - API_INSTANCES=http://api2:8080
+            - PRINCIPAL_SERVICE=http://payment-processor-default:8080
+            - FALLBACK_SERVICE=http://payment-processor-fallback:8080
+        networks:
+            - payment-processor
+            - backend
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: "150MB"
+    api2:
+        image: mxlange/ws-api:v1.0.0
+        hostname: api2
+        environment:
+            - API_INSTANCES=http://api1:8080
+            - PRINCIPAL_SERVICE=http://payment-processor-default:8080
+            - FALLBACK_SERVICE=http://payment-processor-fallback:8080
+        networks:
+            - payment-processor
+            - backend
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: "150MB"
+    nginx:
+        image: mxlange/ws-lb:v1.0.0
+        container_name: lb
+        depends_on:
+            - api1
+            - api2
+        ports:
+            - "9999:9999"
+        networks:
+            - backend
+        environment:
+            - API1=api1:8080
+            - API2=api2:8080
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: "50MB"
