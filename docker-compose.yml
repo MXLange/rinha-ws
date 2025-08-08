@@ -6,7 +6,7 @@ networks:
         external: true
 services:
     api1:
-        image: mxlange/ws-api:v1.0.0
+        image: mxlange/ws-api:v1.0.1
         hostname: api1
         environment:
             - API_INSTANCES=http://api2:8080
@@ -21,7 +21,7 @@ services:
                     cpus: "0.5"
                     memory: "150MB"
     api2:
-        image: mxlange/ws-api:v1.0.0
+        image: mxlange/ws-api:v1.0.1
         hostname: api2
         environment:
             - API_INSTANCES=http://api1:8080

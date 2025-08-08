@@ -415,9 +415,6 @@ func worker() {
 				}
 			}
 
-			workerMutex.Lock()
-			workerMutex.Unlock()
-
 			err = Save(p)
 			if err != nil {
 				fmt.Println("Error saving payment:", err)
@@ -445,9 +442,6 @@ func errWorker() {
 					return
 				}
 			}
-
-			errWorkerMutex.Lock()
-			errWorkerMutex.Unlock()
 
 			err = Save(p)
 			if err != nil {
